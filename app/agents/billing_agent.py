@@ -1,7 +1,3 @@
-from langchain_core.tools import tool
-
-from app.llm import gemini_llm
-
 import time
 
 from langchain_core.tools import tool

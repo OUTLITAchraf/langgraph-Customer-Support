@@ -1,0 +1,20 @@
+{
+  "agent_id": "billing_support",
+  "name": "Billing Support Specialist",
+  "description": "Handles billing questions, duplicate charges, payment issues, and invoice inquiries.",
+  "version": "1.0.0",
+  "agent_type": "specialist",
+  "capabilities": [
+    "explain_billing_issues",
+    "investigate_duplicate_charge_questions",
+    "assist_with_payment_questions",
+    "explain_invoice_information"
+  ],
+  "available_tools": [],
+  "permissions": {
+    "can_handle_billing_requests": true,
+    "can_route_requests": false,
+    "can_modify_customer_data": false
+  },
+  "status": "active"
+}

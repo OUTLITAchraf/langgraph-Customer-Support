@@ -40,7 +40,7 @@ def handle_support_request(request: SupportRequest):
             "response": response,
         }
 
-    except Exception:
+    except Exception:  # noqa: BLE001
         raise HTTPException(
             status_code=500,
             detail="An error occurred while processing your support request.",

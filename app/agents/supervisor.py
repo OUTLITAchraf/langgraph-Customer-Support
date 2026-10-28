@@ -1,13 +1,11 @@
+import time
 from typing import TypedDict
 
-from app.llm import gemini_llm
 from app.agents.account_agent import account_support_tool
 from app.agents.billing_agent import billing_support_tool
 from app.agents.technical_agent import technical_support_tool
-
-import time
-
-from app.observability.tracing import trace_operation, trace_llm_usage
+from app.llm import gemini_llm
+from app.observability.tracing import trace_llm_usage, trace_operation
 
 
 class SupportState(TypedDict):

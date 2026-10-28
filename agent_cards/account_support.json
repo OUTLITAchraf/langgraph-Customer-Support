@@ -1,0 +1,19 @@
+{
+  "agent_id": "account_support",
+  "name": "Account Support Specialist",
+  "description": "Handles customer account access, login, and authentication questions.",
+  "version": "1.0.0",
+  "agent_type": "specialist",
+  "capabilities": [
+    "troubleshoot_login_issues",
+    "assist_with_account_access",
+    "explain_authentication_steps"
+  ],
+  "available_tools": [],
+  "permissions": {
+    "can_handle_account_requests": true,
+    "can_route_requests": false,
+    "can_modify_customer_data": false
+  },
+  "status": "active"
+}
