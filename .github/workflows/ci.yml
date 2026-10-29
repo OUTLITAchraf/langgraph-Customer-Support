@@ -30,9 +30,15 @@ jobs:
 
       - name: Run automated tests
         env:
-          OPENROUTER_MODEL: test-model
+          OPENROUTER_MODEL_NVIDIA: test-model
+          OPENROUTER_MODEL_GOOGLE: test-model
           OPENROUTER_API_KEY: test-key
+          GEMINI_MODEL: test-model
           GEMINI_API_KEY: test-key
+          GROQ_MODEL: test-model
+          GROQ_API_KEY: test-key
+          DEEPSEEK_MODEL: test-model
+          DEEPSEEK_API_KEY: test-key
           SLACK_BOT_TOKEN: xoxb-test-token
         run: |
           python -m pytest -v
