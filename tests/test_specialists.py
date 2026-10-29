@@ -58,7 +58,8 @@ def test_account_specialist_traces_and_reraises_error(mock_llm, mock_trace):
 @patch("app.agents.billing_agent.is_billing_support_enabled", return_value=True)
 @patch("app.agents.billing_agent.trace_llm_usage")
 @patch("app.agents.billing_agent.gemini_llm")
-def test_billing_specialist_returns_response(mock_llm, mock_trace, mock_kill_switch):
+@patch("app.agents.billing_agent.find_customer_transactions", return_value=[])
+def test_billing_specialist_returns_response(mock_find_transactions, mock_llm, mock_trace, mock_kill_switch):
     mock_response = MagicMock()
     mock_response.content = "Review your invoice for the duplicate charge."
     mock_response.usage_metadata = {
@@ -81,8 +82,12 @@ def test_billing_specialist_returns_response(mock_llm, mock_trace, mock_kill_swi
 @patch("app.agents.billing_agent.is_billing_support_enabled", return_value=True)
 @patch("app.agents.billing_agent.trace_llm_usage")
 @patch("app.agents.billing_agent.gemini_llm")
+@patch("app.agents.billing_agent.find_customer_transactions", return_value=[])
 def test_billing_specialist_does_not_claim_refund_was_processed(
-    mock_llm, mock_trace,mock_kill_switch
+    mock_find_transactions,
+    mock_llm,
+    mock_trace,
+    mock_kill_switch,
 ):
     mock_response = MagicMock()
     mock_response.content = (
