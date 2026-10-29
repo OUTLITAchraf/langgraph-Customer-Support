@@ -9,6 +9,8 @@ from app.observability.tracing import trace_llm_usage
 from db.transactions import find_customer_transactions
 from datetime import datetime, timedelta
 
+from app.governance.kill_switch import is_billing_support_enabled
+
 
 def extract_email(message: str) -> str | None:
     """Extract an email address from the customer's message."""
@@ -122,6 +124,13 @@ def fallback_response(
 @tool
 def billing_support_tool(customer_message: str) -> str:
     """Investigate billing questions using verified PostgreSQL transactions."""
+
+    if not is_billing_support_enabled():
+        return (
+            "Billing support is temporarily unavailable. "
+            "Please contact the Billing Support Team for assistance. "
+            "No billing investigation was performed."
+        )
 
     start_time = time.perf_counter()
     usage = {}
