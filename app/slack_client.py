@@ -19,7 +19,10 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-slack_app = App(token=os.environ["SLACK_BOT_TOKEN"])
+slack_app = App(
+    token=os.getenv("SLACK_BOT_TOKEN", "xoxb-test-token"),
+    token_verification_enabled=False,
+)
 CHANNEL_ID = os.environ["SLACK_APPROVAL_CHANNEL_ID"]
 APPROVER_USER_IDS: Set[str] = {
     user_id.strip()
