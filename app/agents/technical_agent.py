@@ -2,7 +2,7 @@ import time
 
 from langchain_core.tools import tool
 
-from app.llm import gemini_llm
+from app.llm import openRouter_llm_google
 from app.observability.tracing import trace_llm_usage
 
 
@@ -31,7 +31,7 @@ def technical_support_tool(customer_message: str) -> str:
     start_time = time.perf_counter()
 
     try:
-        response = gemini_llm.invoke(prompt)
+        response = openRouter_llm_google.invoke(prompt)
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
         content = response.content

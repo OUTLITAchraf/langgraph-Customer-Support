@@ -4,7 +4,7 @@ from typing import TypedDict
 from app.agents.account_agent import account_support_tool
 from app.agents.billing_agent import billing_support_tool
 from app.agents.technical_agent import technical_support_tool
-from app.llm import gemini_llm
+from app.llm import openRouter_llm
 from app.observability.tracing import trace_llm_usage, trace_operation
 
 
@@ -25,7 +25,7 @@ specialist_tools = [
 ]
 
 # Enable the LLM to request calls to these tools.
-supervisor_llm = gemini_llm.bind_tools(specialist_tools)
+supervisor_llm = openRouter_llm.bind_tools(specialist_tools)
 
 
 def supervisor_agent(customer_message: str) -> str:
@@ -80,7 +80,7 @@ def supervisor_agent(customer_message: str) -> str:
                 "agent": "supervisor",
                 "project": "customer-support-platform",
                 "latency_ms": latency_ms,
-                "provider": "gemini",
+                "provider": "openRouter",
             },
         )
 

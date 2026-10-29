@@ -10,8 +10,15 @@ from langchain_openai import ChatOpenAI
 load_dotenv()
 
 # Create the shared LLM client.
-llm = ChatOpenAI(
-    model=os.getenv("OPENROUTER_MODEL"),
+openRouter_llm = ChatOpenAI(
+    model=os.getenv("OPENROUTER_MODEL_NVIDIA"),
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
+    temperature=0,
+)
+
+openRouter_llm_google = ChatOpenAI(
+    model=os.getenv("OPENROUTER_MODEL_GOOGLE"),
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
     temperature=0,
