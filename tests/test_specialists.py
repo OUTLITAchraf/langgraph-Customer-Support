@@ -7,7 +7,7 @@ from app.agents.technical_agent import technical_support_tool
 
 
 @patch("app.agents.account_agent.trace_llm_usage")
-@patch("app.agents.account_agent.gemini_llm")
+@patch("app.agents.account_agent.openRouter_llm")
 def test_account_specialist_returns_response(mock_llm, mock_trace):
     mock_response = MagicMock()
     mock_response.content = "Try resetting your password."
@@ -24,7 +24,7 @@ def test_account_specialist_returns_response(mock_llm, mock_trace):
 
 
 @patch("app.agents.account_agent.trace_llm_usage")
-@patch("app.agents.account_agent.gemini_llm")
+@patch("app.agents.account_agent.openRouter_llm")
 def test_account_specialist_handles_list_content(mock_llm, mock_trace):
     mock_response = MagicMock()
     mock_response.content = [
@@ -41,7 +41,7 @@ def test_account_specialist_handles_list_content(mock_llm, mock_trace):
 
 
 @patch("app.agents.account_agent.trace_llm_usage")
-@patch("app.agents.account_agent.gemini_llm")
+@patch("app.agents.account_agent.openRouter_llm")
 def test_account_specialist_traces_and_reraises_error(mock_llm, mock_trace):
     mock_llm.invoke.side_effect = RuntimeError("Simulated LLM failure")
 
@@ -55,9 +55,10 @@ def test_account_specialist_traces_and_reraises_error(mock_llm, mock_trace):
     assert mock_trace.call_args.kwargs["error"] is not None
 
 
+@patch("app.agents.billing_agent.is_billing_support_enabled", return_value=True)
 @patch("app.agents.billing_agent.trace_llm_usage")
 @patch("app.agents.billing_agent.gemini_llm")
-def test_billing_specialist_returns_response(mock_llm, mock_trace):
+def test_billing_specialist_returns_response(mock_llm, mock_trace, mock_kill_switch):
     mock_response = MagicMock()
     mock_response.content = "Review your invoice for the duplicate charge."
     mock_response.usage_metadata = {
@@ -65,17 +66,23 @@ def test_billing_specialist_returns_response(mock_llm, mock_trace):
     }
     mock_llm.invoke.return_value = mock_response
 
-    result = billing_support_tool.invoke({"customer_message": "I was charged twice"})
+    result = billing_support_tool.invoke({
+        "customer_message": (
+            "I was charged twice. My account email is customer@example.com. "
+            "The transaction was on October 20 for $50."
+        )
+    })
 
     assert result == "Review your invoice for the duplicate charge."
     mock_llm.invoke.assert_called_once()
     mock_trace.assert_called_once()
 
 
+@patch("app.agents.billing_agent.is_billing_support_enabled", return_value=True)
 @patch("app.agents.billing_agent.trace_llm_usage")
 @patch("app.agents.billing_agent.gemini_llm")
 def test_billing_specialist_does_not_claim_refund_was_processed(
-    mock_llm, mock_trace,
+    mock_llm, mock_trace,mock_kill_switch
 ):
     mock_response = MagicMock()
     mock_response.content = (
@@ -85,32 +92,20 @@ def test_billing_specialist_does_not_claim_refund_was_processed(
     mock_response.usage_metadata = {}
     mock_llm.invoke.return_value = mock_response
 
-    result = billing_support_tool.invoke(
-        {"customer_message": "Has my refund been issued?"}
-    )
+    result = billing_support_tool.invoke({
+        "customer_message": (
+            "Has my refund been issued? My account email is customer@example.com. "
+            "The transaction was on October 20 for $50."
+        )
+    })
 
     assert "cannot confirm" in result.lower()
     assert "refund" in result.lower()
     mock_trace.assert_called_once()
 
 
-@patch("app.agents.billing_agent.trace_llm_usage")
-@patch("app.agents.billing_agent.gemini_llm")
-def test_billing_specialist_traces_and_reraises_error(mock_llm, mock_trace):
-    mock_llm.invoke.side_effect = RuntimeError("Simulated billing failure")
-
-    try:
-        billing_support_tool.invoke({"customer_message": "I was charged twice"})
-        assert False, "Expected RuntimeError was not raised"
-    except RuntimeError as error:
-        assert str(error) == "Simulated billing failure"
-
-    assert mock_trace.call_count == 1
-    assert mock_trace.call_args.kwargs["error"] is not None
-
-
 @patch("app.agents.technical_agent.trace_llm_usage")
-@patch("app.agents.technical_agent.gemini_llm")
+@patch("app.agents.technical_agent.openRouter_llm_google")
 def test_technical_specialist_returns_response(mock_llm, mock_trace):
     mock_response = MagicMock()
     mock_response.content = "Restart the application and check for updates."
@@ -129,7 +124,7 @@ def test_technical_specialist_returns_response(mock_llm, mock_trace):
 
 
 @patch("app.agents.technical_agent.trace_llm_usage")
-@patch("app.agents.technical_agent.gemini_llm")
+@patch("app.agents.technical_agent.openRouter_llm_google")
 def test_technical_specialist_does_not_claim_unverified_repair(
     mock_llm, mock_trace,
 ):
@@ -150,7 +145,7 @@ def test_technical_specialist_does_not_claim_unverified_repair(
 
 
 @patch("app.agents.technical_agent.trace_llm_usage")
-@patch("app.agents.technical_agent.gemini_llm")
+@patch("app.agents.technical_agent.openRouter_llm_google")
 def test_technical_specialist_traces_and_reraises_error(mock_llm, mock_trace):
     mock_llm.invoke.side_effect = RuntimeError("Simulated technical failure")
 

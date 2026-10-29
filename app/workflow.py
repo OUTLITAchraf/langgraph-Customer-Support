@@ -4,7 +4,7 @@ from app.agent_cards import load_all_agent_cards
 from app.agents.supervisor import SupportState, supervisor_agent
 from app.observability.langfuse_client import langfuse
 
-WORKFLOW_VERSION = "1.0.0"
+WORKFLOW_VERSION = "1.1.0"
 
 
 def run_supervisor(state: SupportState) -> dict:
